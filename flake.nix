@@ -19,7 +19,7 @@
   description = "open-source infrastructure for implementing chip design flows";
 
   inputs = {
-    nix-eda.url = "github:fossi-foundation/nix-eda/2.1.3";
+    nix-eda.url = "github:fossi-foundation/nix-eda/4.3.0";
     libparse.url = "github:efabless/libparse-python";
     ciel.url = "github:fossi-foundation/ciel";
     devshell.url = "github:numtide/devshell";
@@ -48,9 +48,6 @@
         (nix-eda.flakesToOverlay [libparse ciel])
         (pkgs': pkgs: {
           yosys-sby = (pkgs.yosys-sby.override { sha256 = "sha256-Il2pXw2doaoZrVme2p0dSUUa8dCQtJJrmYitn1MkTD4="; });
-          klayout = (pkgs.klayout.overrideAttrs(old: {
-            configurePhase = builtins.replaceStrings ["-without-qtbinding"] ["-with-qtbinding"] old.configurePhase;
-          }));
           yosys = pkgs.yosys.overrideAttrs(old: {
             patches = old.patches ++ [
               ./nix/patches/yosys/async_rules.patch
@@ -136,7 +133,11 @@
         # include the package itself. For a proper devShell, try .#dev.
         default =
           callPackage (self.createOpenLaneShell {
-            }) {};
+            extra-packages = with nix-eda.legacyPackages.${system}; [
+              xschem
+              xyce
+            ];
+          }) {};
         notebook = callPackage (self.createOpenLaneShell {
           extra-packages = with pkgs; [
             jupyter
