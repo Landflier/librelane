@@ -162,6 +162,7 @@
 	    pkgs.alejandra
 	    pkgs.openfasoc
 	    nix-eda.legacyPackages.${system}.xschem
+	    nix-eda.legacyPackages.${system}.ngspice
 	    nix-eda.legacyPackages.${system}.xyce
           ];
           extra-python-packages = with pkgs.python3.pkgs; [
