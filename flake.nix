@@ -65,17 +65,16 @@
             openfasoc = callPackage ./nix/openfasoc.nix {
               inherit (pkgs') openroad;
               inherit (nix-eda.legacyPackages.${pkgs.system}) 
-                magic-vlsi netgen yosysFull ngspice xyce klayout;
+                magic-vlsi netgen ngspice xyce klayout;
               inherit (nix-eda.legacyPackages.${pkgs.system}.python3.pkgs) 
-                gdsfactory 
-                numpy pandas scipy scikit-learn matplotlib seaborn
-                cairosvg mako nbsphinx prettyprinttree;
+                gdsfactory ;
+              inherit (pkgs'.python3.pkgs) gLayout;
             };
           }
         )
         (
           nix-eda.composePythonOverlay (pkgs': pkgs: pypkgs': pypkgs: let
-            callPythonPackage = lib.callPackageWith (pkgs' // pypkgs');
+            callPythonPackage = lib.callPackageWith (pkgs' // pkgs'.python3.pkgs);
           in {
             mdformat = pypkgs.mdformat.overridePythonAttrs (old: {
               patches = [
@@ -86,7 +85,10 @@
             sphinx-tippy = callPythonPackage ./nix/sphinx-tippy.nix {};
             sphinx-subfigure = callPythonPackage ./nix/sphinx-subfigure.nix {};
             yamlcore = callPythonPackage ./nix/yamlcore.nix {};
-            gLayout = callPythonPackage ./nix/gLayout.nix {};
+            gLayout = callPythonPackage ./nix/gLayout.nix {
+              inherit (nix-eda.legacyPackages.${pkgs.system}) 
+                klayout;
+            };
 
             # ---
             librelane = callPythonPackage ./default.nix {
@@ -155,9 +157,12 @@
         }) {};
         # Normal devShells
         dev = callPackage (self.createOpenLaneShell {
-          extra-packages = with pkgs; [
-            jdupes
-            alejandra
+          extra-packages = [
+            pkgs.jdupes
+	    pkgs.alejandra
+	    pkgs.openfasoc
+	    nix-eda.legacyPackages.${system}.xschem
+	    nix-eda.legacyPackages.${system}.xyce
           ];
           extra-python-packages = with pkgs.python3.pkgs; [
             pyfakefs
@@ -175,7 +180,7 @@
             types-pyyaml
             types-psutil
             lxml-stubs
-          ];
+          ] ++ (pkgs.openfasoc.python-packages pkgs.python3.pkgs);
           include-librelane = false;
         }) {};
         docs = callPackage (self.createOpenLaneShell {

@@ -7,7 +7,6 @@
   openroad,  # From librelane
   magic-vlsi,  # From nix-eda
   netgen,  # From nix-eda
-  yosysFull,  # From nix-eda
   ngspice,  # From nix-eda
   xyce,  # From nix-eda
   makeWrapper,
@@ -30,9 +29,8 @@
     ps.mako
     
     # Other utilities
-    ps.gdsfactory
+    gdsfactory
     ps.nbsphinx
-    ps.prettyprinttree
     ps.pyyaml
     gLayout
   ];
@@ -57,28 +55,25 @@ stdenv.mkDerivation {
     python-env
     magic-vlsi
     netgen
-    yosysFull
     openroad
     ngspice
     xyce
     klayout  
   ];
 
+
   installPhase = ''
     mkdir -p $out/bin $out/share/openfasoc
     cp -r * $out/share/openfasoc/
-    
-    # Create wrapper script
-    makeWrapper ${python-env}/bin/python $out/bin/openfasoc \
-      --add-flags "$out/share/openfasoc/openfasoc/main.py" \
-      --prefix PATH : ${lib.makeBinPath buildInputs}
   '';
-
   meta = with lib; {
     description = "Fully autonomous synthesis of analog circuits";
     homepage = "https://github.com/idea-fasoc/OpenFASOC";
     license = licenses.asl20;
     platforms = platforms.linux;
     maintainers = [];
+  };
+  passthru = {
+    inherit python-packages;
   };
 } 
