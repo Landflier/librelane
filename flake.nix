@@ -19,7 +19,7 @@
   description = "open-source infrastructure for implementing chip design flows";
 
   inputs = {
-    nix-eda.url = "github:fossi-foundation/nix-eda/4.3.0";
+    nix-eda.url = "github:fossi-foundation/nix-eda/2.1.3";
     libparse.url = "github:efabless/libparse-python";
     ciel.url = "github:fossi-foundation/ciel";
     devshell.url = "github:numtide/devshell";
@@ -62,11 +62,20 @@
             opensta = callPackage ./nix/opensta.nix {};
             openroad-abc = callPackage ./nix/openroad-abc.nix {};
             openroad = callPackage ./nix/openroad.nix {};
+            openfasoc = callPackage ./nix/openfasoc.nix {
+              inherit (pkgs') openroad;
+              inherit (nix-eda.legacyPackages.${pkgs.system}) 
+                magic-vlsi netgen yosysFull ngspice xyce klayout;
+              inherit (nix-eda.legacyPackages.${pkgs.system}.python3.pkgs) 
+                gdsfactory 
+                numpy pandas scipy scikit-learn matplotlib seaborn
+                cairosvg mako nbsphinx prettyprinttree;
+            };
           }
         )
         (
           nix-eda.composePythonOverlay (pkgs': pkgs: pypkgs': pypkgs: let
-            callPythonPackage = lib.callPackageWith (pkgs' // pkgs'.python3.pkgs);
+            callPythonPackage = lib.callPackageWith (pkgs' // pypkgs');
           in {
             mdformat = pypkgs.mdformat.overridePythonAttrs (old: {
               patches = [
@@ -77,6 +86,7 @@
             sphinx-tippy = callPythonPackage ./nix/sphinx-tippy.nix {};
             sphinx-subfigure = callPythonPackage ./nix/sphinx-subfigure.nix {};
             yamlcore = callPythonPackage ./nix/yamlcore.nix {};
+            gLayout = callPythonPackage ./nix/gLayout.nix {};
 
             # ---
             librelane = callPythonPackage ./default.nix {
@@ -113,8 +123,8 @@
       system: let
         pkgs = (self.legacyPackages."${system}");
         in {
-          inherit (pkgs) colab-env opensta openroad-abc openroad;
-          inherit (pkgs.python3.pkgs) librelane;
+          inherit (pkgs) colab-env opensta openroad-abc openroad openfasoc;
+          inherit (pkgs.python3.pkgs) librelane gLayout;
           default = pkgs.python3.pkgs.librelane;
         }
         // lib.optionalAttrs pkgs.stdenv.isLinux {
