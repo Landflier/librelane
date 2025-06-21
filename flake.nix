@@ -126,7 +126,7 @@
         pkgs = (self.legacyPackages."${system}");
         in {
           inherit (pkgs) colab-env opensta openroad-abc openroad openfasoc;
-          inherit (pkgs.python3.pkgs) librelane gLayout;
+          inherit (pkgs.python3.pkgs) librelane;
           default = pkgs.python3.pkgs.librelane;
         }
         // lib.optionalAttrs pkgs.stdenv.isLinux {
