@@ -182,7 +182,11 @@
             types-pyyaml
             types-psutil
             lxml-stubs
+            # for jupyter version control
+            jupyterlab
+            nbdime
           ] ++ (pkgs.openfasoc.python-packages pkgs.python3.pkgs);
+
           include-librelane = false;
           # used to set the PDK_ROOT
 	  extra-env = [

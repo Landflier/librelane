@@ -26,6 +26,9 @@
   torch,
   transformers,
   scikit-learn,
+  # required by openfasoc/glayout/test_glayout.py
+  pyfiglet,
+  nltk,
   version ? "0.1.4",
   rev ? "7344b648b999b45ad4d57b750347890144d64207",
   sha256 ? "sha256-RmsdavfcuKK+wo+q5Db35BXUET+2zS+xZlUJmVvS14g=",
@@ -92,6 +95,9 @@
       matplotlib  
       gdstk
       svgutils
+      # required by openfasoc/glayout/test_glayout.py
+      pyfiglet
+      nltk
     ];
 
     nativeBuildInputs = [
