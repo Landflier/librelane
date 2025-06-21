@@ -66,9 +66,8 @@
               inherit (pkgs') openroad;
               inherit (nix-eda.legacyPackages.${pkgs.system}) 
                 magic-vlsi netgen ngspice xyce klayout;
-              inherit (nix-eda.legacyPackages.${pkgs.system}.python3.pkgs) 
-                gdsfactory ;
-              inherit (pkgs'.python3.pkgs) gLayout;
+              inherit (pkgs'.python3.pkgs) 
+                gdsfactory gLayout;
             };
           }
         )
@@ -85,9 +84,11 @@
             sphinx-tippy = callPythonPackage ./nix/sphinx-tippy.nix {};
             sphinx-subfigure = callPythonPackage ./nix/sphinx-subfigure.nix {};
             yamlcore = callPythonPackage ./nix/yamlcore.nix {};
+            gdsfactory = callPythonPackage ./nix/gdsfactory.nix {};
             gLayout = callPythonPackage ./nix/gLayout.nix {
               inherit (nix-eda.legacyPackages.${pkgs.system}) 
                 klayout;
+              inherit (pkgs'.python3.pkgs) gdsfactory;
             };
 
             # ---

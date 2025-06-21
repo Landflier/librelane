@@ -1,18 +1,22 @@
 {
   lib,
   fetchFromGitHub,
+  fetchPypi,
   buildPythonPackage,
   setuptools,
   wheel,
+  flit-core,
   # Main dependencies
-  gdsfactory,
   numpy,
   pandas,
   matplotlib,
   klayout,  # From nix-eda
   gdstk,
   svgutils,
+  gdsfactory,
   # Dev dependencies
+  colorama,
+  cmd2,
   pytest,
   pytest-cov,
   black,
@@ -24,8 +28,45 @@
   scikit-learn,
   version ? "0.1.4",
   rev ? "7344b648b999b45ad4d57b750347890144d64207",
-  sha256 ? "sha256-5+t6pjfuckz1kKVsMNaUvYcy+ushWFVf7IQC08sN2GM=",
+  sha256 ? "sha256-RmsdavfcuKK+wo+q5Db35BXUET+2zS+xZlUJmVvS14g=",
 }: let
+  prettyprint = buildPythonPackage {
+    pname = "prettyprint";
+    format = "pyproject";
+    version = "0.1.5";
+
+    buildInputs = [
+      setuptools
+    ];
+
+    src = fetchPypi {
+      inherit (prettyprint) pname version;
+      sha256 = "sha256-dCMhC2Kt+zd3Z3kUzSXbSRnxwrCvugRUNl/7+j9+NzE=";
+    };
+    doCheck = false;
+  };
+
+  prettyprinttree = buildPythonPackage {
+    pname = "prettyprinttree";
+    format = "pyproject";
+    version = "2.0.1";
+
+    propagatedBuildInputs = [
+      colorama
+      cmd2
+    ];
+  
+    buildInputs = [
+      setuptools
+    ];
+
+    src = fetchPypi {
+      inherit (prettyprinttree) pname version;
+      sha256 = "sha256-wx+ZZr/jEv7/Waq5Aiy862jeW/YOE74ywagYOl/UUnI=";
+    };
+    doCheck = false;
+  };
+
   self = buildPythonPackage {
     pname = "glayout";
     inherit version;
@@ -43,10 +84,12 @@
     ];
 
     propagatedBuildInputs = [
-      gdsfactory  # >6.0.0,<=7.7.0
-      numpy  # >1.21.0,<=1.24.0
-      pandas  # >1.3.0,<=2.3.0
-      matplotlib  # >3.4.0,<=3.10.0
+      gdsfactory
+      numpy  
+      pandas  
+      prettyprint
+      prettyprinttree
+      matplotlib  
       gdstk
       svgutils
     ];
@@ -58,16 +101,16 @@
 
     passthru.optional-dependencies = {
       dev = [
-        pytest  # >=7.0.0
-        pytest-cov  # >=3.0.0
-        black  # >=22.0.0
-        isort  # >=5.0.0
-        flake8  # >=4.0.0
+        pytest  
+        pytest-cov  
+        black  
+        isort  
+        flake8  
       ];
       ml = [
-        torch  # >=1.10.0
-        transformers  # >=4.0.0
-        scikit-learn  # >=1.0.0
+        torch  
+        transformers  
+        scikit-learn  
       ];
     };
 
