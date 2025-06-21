@@ -184,7 +184,14 @@
             lxml-stubs
           ] ++ (pkgs.openfasoc.python-packages pkgs.python3.pkgs);
           include-librelane = false;
-        }) {};
+          # used to set the PDK_ROOT
+	  extra-env = [
+            {
+              name = "PDK_ROOT";
+	      value = "/usr/local/share/pdk/";
+            }
+	  ];
+	}) {};
         docs = callPackage (self.createOpenLaneShell {
           extra-packages = with pkgs; [
             jdupes
