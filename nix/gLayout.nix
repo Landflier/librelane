@@ -5,8 +5,8 @@
   buildPythonPackage,
   setuptools,
   wheel,
-  flit-core,
   # Main dependencies
+  scipy, 
   numpy,
   pandas,
   matplotlib,
@@ -32,7 +32,6 @@
   # required by the jupyter notebooks
   ipywidgets,
   jupytext,
-  pygmid,
   version ? "0.1.1",
   rev ? "88a787b3a7ba6188f6fbbd166c873e5f029f4016",
   sha256 ? "sha256-+/PLJmgwfTTsh5uoSMvL4NXGNSQ6vQDDImdkuAA1TeU=",
@@ -105,7 +104,7 @@
       # required by the gLayout jupyter notebooks
       ipywidgets
       jupytext
-      pygmid
+      scipy
     ];
 
     nativeBuildInputs = [

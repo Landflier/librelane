@@ -85,6 +85,7 @@
             sphinx-subfigure = callPythonPackage ./nix/sphinx-subfigure.nix {};
             yamlcore = callPythonPackage ./nix/yamlcore.nix {};
             gdsfactory = callPythonPackage ./nix/gdsfactory.nix {};
+            pygmid = callPythonPackage ./nix/pygmid.nix {};
             gLayout = callPythonPackage ./nix/gLayout.nix {
               inherit (nix-eda.legacyPackages.${pkgs.system}) 
                 klayout;
